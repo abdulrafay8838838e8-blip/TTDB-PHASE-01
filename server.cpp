@@ -140,6 +140,20 @@ public:
     void record(Snapshot* s)
     {
         // add record in the timeline
+        TimelineNode* n = new TimelineNode;
+        n->data = s;
+        n->next = nullptr;
+        n->prev = tail;
+        if (tail != nullptr)
+        {
+            tail->next = n;
+        }
+        else
+        {
+            head = n;
+        }
+        tail = n;
+        stepCount++;
 
 
     }
@@ -326,10 +340,40 @@ int64_t writeResolveRecord(FILE* f, int64_t offsetField, const string& text)
 {
     // writes one [offset(8B)][size(4B)][string] record at the current file position
     // returns this record's own starting byte position
+    int64_t position = (int64_t)ftell(f);
+    int32_t size = (int32_t)text.size();
+    fwrite(&offsetField, sizeof(int64_t), 1, f);
+    fwrite(&size, sizeof(int32_t), 1, f);
+    if (size > 0)
+    {
+        fwrite(text.data(), 1, (size_t)size, f);
+    }
+    return position;
 }
 int64_t readResolveRecord(FILE* f, string& outText)
 {
     // reads one record at the current position and advances past it, returns the offset field - the raw line text comes back untouched in outText.
+    outText.clear();
+    int64_t offsetField;
+    int32_t size;
+    if (fread(&offsetField, sizeof(int64_t), 1, f) != 1)
+    {
+        return -1;
+    }
+    if (fread(&size, sizeof(int32_t), 1, f) != 1 || size < 0)
+    {
+        return -1;
+    }
+    if (size > 0)
+    {
+        outText.resize((size_t)size);
+        if (fread(&outText[0], 1, (size_t)size, f) != (size_t)size)
+        {
+            outText.clear();
+            return -1;
+        }
+    }
+    return offsetField;
 }
 int64_t resolveProgram(const char* sourcePath, const char* resolveBinPath)
 {
@@ -345,6 +389,9 @@ int64_t resolveProgram(const char* sourcePath, const char* resolveBinPath)
     // with its target's position. Patching happens after the full write
     // Returns the byte offset of main's FUNC header record.
     // if there is no main return the error 
+
+
+
 }
 
 // PASS 0x2: EXECUTION (tokenization happens here)
@@ -365,6 +412,7 @@ int32_t tokenizeLine(const string& line, Token tokens[], int32_t maxTokens)
     // instruction set = [func, func_end, call, set, add, sub, mul and div]
     // next word is identifier like name of a function, variable name
     // after identifier all are the params/arg, space separated
+
 }
 Snapshot* buildSnapshot(Stack<Frame>& callStack)
 {
