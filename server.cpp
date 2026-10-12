@@ -140,6 +140,8 @@ public:
     void record(Snapshot* s)
     {
         // add record in the timeline
+
+
     }
     TimelineNode* begin()
     {
@@ -204,18 +206,119 @@ struct PendingPatch
 bool readSourceLine(ifstream& in, string& out)
 {
     // reads the next nonblank line
+    string line;
+    while (getline(in, line))
+    {
+        if (!line.empty() && line.back() == '\r')
+        {
+            line.pop_back();
+        }
+            
+        bool blank = true;
+        for (size_t i = 0; i < line.size(); i++)
+        {
+            if (!isspace(line[i]))
+            {
+                blank = false;
+                break;
+            }
+        }
+        if (!blank)
+        {
+            out = line;
+            return true;
+        }
+    }
+    return false;
 }
 string firstWord(const string& line)
 {
     // returns first word from the input string
+    size_t i = 0, n = line.size();
+    while (i < n && isspace(line[i]))
+    {
+        i++;
+    }
+    size_t start = i;
+    while (i < n && !isspace(line[i]))
+    {
+        i++;
+    }
+    return line.substr(start, i - start);
 }
 string secondWord(const string& line)
 {
     // returns the second word
+    size_t i = 0, n = line.size();
+    while (i < n && isspace(line[i]))
+    {
+        i++;
+    }
+    while (i < n && !isspace(line[i]))
+    {
+        i++;
+    }
+    while (i < n && isspace(line[i])) 
+    {
+        i++;
+    }
+    size_t start = i;
+    while (i < n && !isspace(line[i]))
+    {
+        i++;
+    }
+    return line.substr(start, i - start);
 }
 bool validateProgram(const char* sourcePath)
 {
     // for each func defined there should be exactly one func_end and no nested funcs allowed - 
+    ifstream in(sourcePath);
+    if (!in.is_open())
+    {
+        cerr << "cannot open " << sourcePath << endl;
+        return false;
+    }
+    bool inFunc = false;
+    int32_t funcCount = 0;
+    string line;
+    while (readSourceLine(in, line))
+    {
+        string keyWord = firstWord(line);
+        if (keyWord == "func")
+        {
+            if (inFunc)
+            {
+                cerr << "nested func -> " << line << endl;
+                return false;
+            }
+            if (secondWord(line).empty())
+            {
+                cerr << "func without a name" << endl;
+                return false;
+            }
+            if (++funcCount > MAX_FUNCS)
+            {
+                cerr << "more than " << MAX_FUNCS << " functions" << endl;
+                return false;
+            }
+            inFunc = true;
+        }
+        else if (keyWord == "func_end")
+        {
+            if (!inFunc)
+            {
+                cerr << "func_end without matching func" << endl;
+                return false;
+            }
+            inFunc = false;
+        }
+    }
+    if (inFunc)
+    {
+        cerr << "func is missing its func_end" << endl;
+        return false;
+    }
+    return true;
 }
 
 // PASS 0x1: RESOLVE() -> resolve.bin
