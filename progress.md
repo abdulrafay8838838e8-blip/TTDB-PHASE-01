@@ -15,13 +15,17 @@ Plan for tomorrow
 Inshallah, with Allah's help and the TAs' help (once they extend the deadline), I will implement at least 50 percent of the total functions tomorrow.
 8/10/2026
 
-What I did so far
 
-I have finished Pass 0x0 and Pass 0x1 except the resolveProgram method. I am currently working on Pass 0x2.
 
-Next implementation
+I have finished Pass 0x0 by implmenting every method in it, in a while i'll start my work on 0x1.
+
+Done with 0x1 but wasnt able to do the resolveProgram fucntion, now i am moving onto 0x2
+
+
+
+done with 0x2 but wasn't able to do execute program tried to do 0x3 but wasn't able to fully understand it, also tried to do the bonus where server.cpp runs on both windox and linux but unfortunately it 4:31 am so parking it for the day. if the deadline gets extended till midnight today might be able to do the bonus.
+
 
 The next implementation will be the resolveProgram method of Pass 0x1.
 13/10/2026
 
-I made the next implementation line the resolveProgram method, since that's the only part of 0x1 still open. If you'd rather it say Pass 0x3, tell me and I'll change it.
