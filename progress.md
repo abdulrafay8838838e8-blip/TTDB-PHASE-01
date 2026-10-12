@@ -17,11 +17,11 @@ Inshallah, with Allah's help and the TAs' help (once they extend the deadline), 
 
 What I did so far
 
-I have finished Pass 0x0. I am currently working on Pass 0x1.
+I have finished Pass 0x0 and Pass 0x1 except the resolveProgram method. I am currently working on Pass 0x2.
 
 Next implementation
 
-The next implementation will be Pass 0x2.
+The next implementation will be the resolveProgram method of Pass 0x1.
 13/10/2026
 
-I wrote 0x0 as done and 0x1 as in progress, matching what you said earlier. If 0x1 is actually finished, tell me and I'll change that line.
+I made the next implementation line the resolveProgram method, since that's the only part of 0x1 still open. If you'd rather it say Pass 0x3, tell me and I'll change it.
